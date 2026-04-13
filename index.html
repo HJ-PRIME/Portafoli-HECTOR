@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+body{
+    background:#020617;
+    color:#e2e8f0;
+    transition:0.4s;
+}
+
+/* FONDO */
+#bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+/* HEADER */
+.header{
+    position:fixed;
+    top:0;
+    width:100%;
+    height:70px;
+    background:rgba(2,6,23,0.8);
+    backdrop-filter:blur(10px);
+    display:flex;
+    align-items:center;
+    padding:0 30px;
+}
+
+/* IZQUIERDA */
+.left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:50px;
+    mix-blend-mode:screen;
+}
+
+.user{
+    font-weight:bold;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:70px;
+    width:180px;
+    height:100%;
+    background:rgba(2,6,23,0.9);
+    padding:20px;
+}
+
+.sidebar button{
+    width:100%;
+    margin-bottom:10px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* MAIN */
+.main{
+    margin-top:90px;
+    margin-left:200px;
+    padding:20px;
+}
+
+/* CINTA */
+.banner{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.banner h1{
+    padding:10px 30px;
+    border-radius:20px;
+    color:#000;
+}
+
+/* SECCIONES */
+.section{display:none;}
+.section.active{display:block;}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    padding:15px;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+/* BOTONES */
+button.action{
+    margin-top:10px;
+    padding:8px;
+    width:100%;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+}
+
+.delete{
+    background:#ef4444;
+    color:white;
+}
+
+/* ARCHIVOS */
+.file a{
+    display:block;
+    margin-top:5px;
+}
+
+/* 🎨 TEMAS PASTEL */
+.theme1{
+    background:#f0f9ff;
+    color:#0c4a6e;
+}
+.theme1 .card{background:#e0f2fe;}
+.theme1 .banner h1{background:#bae6fd;}
+.theme1 button.action{background:#7dd3fc;}
+
+.theme2{
+    background:#f0fdf4;
+    color:#065f46;
+}
+.theme2 .card{background:#dcfce7;}
+.theme2 .banner h1{background:#bbf7d0;}
+.theme2 button.action{background:#86efac;}
+
+.theme3{
+    background:#faf5ff;
+    color:#581c87;
+}
+.theme3 .card{background:#f3e8ff;}
+.theme3 .banner h1{background:#e9d5ff;}
+.theme3 button.action{background:#c084fc;}
+
+.theme4{
+    background:#fff7ed;
+    color:#7c2d12;
+}
+.theme4 .card{background:#ffedd5;}
+.theme4 .banner h1{background:#fed7aa;}
+.theme4 button.action{background:#fdba74;}
+</style>
+</head>
+
+<body class="theme1">
+
+<canvas id="bg"></canvas>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="left">
+        <div class="logo">
+            <img src="logo.png">
+        </div>
+        <div class="user">
+            ALIAGA LLOCCLLA HECTOR
+        </div>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <button onclick="changeTheme(1)">Unidad I</button>
+    <button onclick="changeTheme(2)">Unidad II</button>
+    <button onclick="changeTheme(3)">Unidad III</button>
+    <button onclick="changeTheme(4)">Unidad IV</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="banner">
+    <h1>ARQUITECTURA DE SOFTWARE</h1>
+</div>
+
+<div id="contenedor"></div>
+
+</div>
+
+<script>
+// FONDO ANIMADO
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let p=[];
+for(let i=0;i<80;i++){
+    p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:0.5,vy:0.5});
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    p.forEach(pt=>{
+        pt.x+=pt.vx; pt.y+=pt.vy;
+        if(pt.x>canvas.width)pt.x=0;
+        if(pt.y>canvas.height)pt.y=0;
+        ctx.fillStyle="#38bdf8";
+        ctx.fillRect(pt.x,pt.y,2,2);
+    });
+    requestAnimationFrame(draw);
+}
+draw();
+
+// CAMBIO DE TEMA
+function changeTheme(n){
+    document.body.className="theme"+n;
+
+    document.querySelectorAll(".section").forEach(sec=>sec.classList.remove("active"));
+    document.getElementById("unidad"+n).classList.add("active");
+}
+
+// SUPABASE
+const supabaseUrl = "https://khsnoblmayqxsdrewxyx.supabase.co";
+const supabaseKey = "sb_publishable_6TjiMy_RpMrCH2cedy1QcQ_-0C8Qn4P";
+const supabaseClient=supabase.createClient(supabaseUrl,supabaseKey);
+
+// UI DINÁMICA
+const cont=document.getElementById("contenedor");
+
+for(let u=1;u<=4;u++){
+
+let html=`<div class="section ${u===1?'active':''}" id="unidad${u}">
+<h2>Unidad ${u}</h2>
+<div class="grid">`;
+
+for(let s=1;s<=4;s++){
+
+let folder=`U${u}_S${s}`;
+
+html+=`
+<div class="card">
+<h3>Semana ${s}</h3>
+<input type="file" id="file_${folder}">
+<button class="action" onclick="uploadFile('${folder}')">Subir</button>
+<div id="list_${folder}" class="file"></div>
+</div>
+`;
+}
+
+html+=`</div></div>`;
+cont.innerHTML+=html;
+}
+
+// SUBIR
+async function uploadFile(folder){
+let file=document.getElementById("file_"+folder).files[0];
+if(!file)return alert("Selecciona archivo");
+
+let path=folder+"/"+Date.now()+"_"+file.name;
+await supabaseClient.storage.from('Archivos').upload(path,file);
+loadFiles(folder);
+}
+
+// LISTAR
+async function loadFiles(folder){
+const {data}=await supabaseClient.storage.from('Archivos').list(folder);
+const div=document.getElementById("list_"+folder);
+div.innerHTML="";
+
+if(data){
+data.forEach(f=>{
+let url=`${supabaseUrl}/storage/v1/object/public/Archivos/${folder}/${f.name}`;
+div.innerHTML+=`
+<div>
+<a href="${url}" download>${f.name}</a>
+<button class="delete" onclick="deleteFile('${folder}','${f.name}')">Eliminar</button>
+</div>`;
+});
+}
+}
+
+// ELIMINAR
+async function deleteFile(folder,name){
+if(!confirm("Eliminar archivo?"))return;
+await supabaseClient.storage.from('Archivos').remove([folder+"/"+name]);
+loadFiles(folder);
+}
+
+// CARGAR ARCHIVOS
+for(let u=1;u<=4;u++){
+for(let s=1;s<=4;s++){
+loadFiles(`U${u}_S${s}`);
+}
+}
+</script>
+
+</body>
+</html>
